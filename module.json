@@ -9,7 +9,7 @@
       "discord": "spacemanian"
     }
   ],
-  "url": "https://github.com/nzlbob/fvtt-token-action-hud-sfrpg",
+  "url": "https://github.com/nzlbob/token-action-hud-sfrpg",
   "flags": {},
   "version": "0.14.02",
   "compatibility": {
@@ -64,9 +64,9 @@
     }
   },
   "socket": false,
-  "manifest": "https://raw.githubusercontent.com/nzlbob/fvtt-token-action-hud-sfrpg/refs/heads/main/module.json",
-  "download": "https://github.com/nzlbob/fvtt-token-action-hud-sfrpg/archive/refs/heads/main.zip",
-  "readme": "https://github.com/nzlbob/fvtt-token-action-hud-sfrpg#readme",
+  "manifest": "https://raw.githubusercontent.com/nzlbob/token-action-hud-sfrpg/refs/heads/main/module.json",
+  "download": "https://github.com/nzlbob/token-action-hud-sfrpg/archive/refs/heads/main.zip",
+  "readme": "https://github.com/nzlbob/token-action-hud-sfrpg#readme",
   "protected": false,
   "coreTranslation": false,
   "library": false
