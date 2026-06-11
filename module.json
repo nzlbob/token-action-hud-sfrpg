@@ -53,7 +53,7 @@
           {
             "minimum": "2.X",
             "maximum": "3.0.0",
-            "verified": "2.X"
+            "verified": "2"
           }
         ]
       }
