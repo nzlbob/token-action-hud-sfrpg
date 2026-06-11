@@ -9,7 +9,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         * @param {object} event
         * @param {string} encodedValue
         */
-        async doHandleActionEvent (event, encodedValue) {
+        async handleActionClick (event, encodedValue) {
             const payload = encodedValue.split('|')
 
             if (payload.length !== 2) {

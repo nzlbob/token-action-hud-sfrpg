@@ -11,9 +11,9 @@
   ],
   "url": "https://github.com/nzlbob/fvtt-token-action-hud-sfrpg",
   "flags": {},
-  "version": "0.14.01",
+  "version": "0.14.02",
   "compatibility": {
-    "minimum": "11",
+    "minimum": "14",
     "verified": "14"
   },
   "esmodules": [
@@ -51,9 +51,9 @@
         "type": "module",
         "compatibility": [
           {
-            "minimum": "1.4.0",
+            "minimum": "2.1.1",
             "maximum": "3.0.0",
-            "verified": "1.4.9"
+            "verified": "2.1.1"
           }
         ]
       }
