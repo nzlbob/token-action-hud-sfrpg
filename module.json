@@ -11,7 +11,7 @@
   ],
   "url": "https://github.com/nzlbob/token-action-hud-sfrpg",
   "flags": {},
-  "version": "0.14.02",
+  "version": "0.14.03",
   "compatibility": {
     "minimum": "14",
     "verified": "14"
@@ -51,9 +51,9 @@
         "type": "module",
         "compatibility": [
           {
-            "minimum": "2.1.1",
+            "minimum": "2.X",
             "maximum": "3.0.0",
-            "verified": "2.1.1"
+            "verified": "2.X"
           }
         ]
       }
