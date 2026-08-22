@@ -30,8 +30,8 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
                 "hazard",
                 "npc2",
                 "starship",
-                "vehicle",
-                "npc"
+                "vehicle"//,
+                //"npc"
             ]
             
             if (!this.actor) {
@@ -61,6 +61,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             switch (actionType) {
             case 'ability':
                 this._rollAbility(event, actor, actionId)
+                break
+            case 'crewAction':
+                await this._rollCrewAction(actor, actionId)
                 break
             case 'action':
             case 'feat':
@@ -99,6 +102,17 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             } else {
                 equipment.roll();
             }
+        }
+
+        /**
+        * Roll Crew Action
+        * @private
+        * @param {object} actor    The actor
+        * @param {string} actionId The action id
+        */
+        async _rollCrewAction (actor, actionId) {
+            if (!actor?.useStarshipAction) return
+            await actor.useStarshipAction(actionId)
         }
 
         /**

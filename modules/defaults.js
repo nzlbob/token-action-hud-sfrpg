@@ -14,6 +14,36 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
     const groupsArray = Object.values(groups)
     DEFAULTS = {
         layout: [
+
+            {
+                nestId: 'starshipWeapons',
+                id: 'starshipWeapons',
+                name: 'Weapons',
+                groups: [
+                    { ...groups.starshipWeaponForward, nestId: 'starshipWeapons_starshipWeaponForward' },
+                    { ...groups.starshipWeaponStarboard, nestId: 'starshipWeapons_starshipWeaponStarboard' },
+                    { ...groups.starshipWeaponPort, nestId: 'starshipWeapons_starshipWeaponPort' },
+                    { ...groups.starshipWeaponAft, nestId: 'starshipWeapons_starshipWeaponAft' },
+                    { ...groups.starshipWeaponTurret, nestId: 'starshipWeapons_starshipWeaponTurret' },
+                    { ...groups.starshipWeapon, nestId: 'starshipWeapons_starshipWeapon' }
+                ]
+            },
+                        {
+                nestId: 'starshipCrew',
+                id: 'starshipCrew',
+                name: 'Crew Actions',
+                groups: [
+                    { ...groups.starshipCrewCaptain, nestId: 'starshipCrew_starshipCrewCaptain' },
+                    { ...groups.starshipCrewPilot, nestId: 'starshipCrew_starshipCrewPilot' },
+                    { ...groups.starshipCrewGunner, nestId: 'starshipCrew_starshipCrewGunner' },
+                    { ...groups.starshipCrewEngineer, nestId: 'starshipCrew_starshipCrewEngineer' },
+                    { ...groups.starshipCrewScienceOfficer, nestId: 'starshipCrew_starshipCrewScienceOfficer' },
+                    { ...groups.starshipCrewMagicOfficer, nestId: 'starshipCrew_starshipCrewMagicOfficer' },
+                    { ...groups.starshipCrewChiefMate, nestId: 'starshipCrew_starshipCrewChiefMate' },
+                    { ...groups.starshipCrewOpenCrew, nestId: 'starshipCrew_starshipCrewOpenCrew' },
+                    { ...groups.starshipCrewMinorCrew, nestId: 'starshipCrew_starshipCrewMinorCrew' },
+                ]
+            },
             {
                 nestId: 'equipment',
                 id: 'equipment',

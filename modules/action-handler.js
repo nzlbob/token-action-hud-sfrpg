@@ -21,7 +21,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {array} groupIds
          */
         async buildSystemActions(groupIds) {
-        // Set actor and token variables
+            // Set actor and token variables
             this.actors = (!this.actor) ? this._getActors() : [this.actor];
             this.actorType = this.actor?.type;
 
@@ -103,7 +103,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         async _buildHazardActions() {
-            
+
         }
 
         /**
@@ -123,7 +123,8 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         async _buildStarshipActions() {
-            
+            await this._buildStarshipCrewActions();
+            this._buildStarshipWeaponsCategory();
         }
 
         /**
@@ -131,7 +132,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          */
         async _buildVehicleActions() {
-            
+
         }
 
         /**
@@ -213,7 +214,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             const untrainedSkills = new Map(Object.entries(this.actor.system.skills).filter(skill => {
                 return (!skill[1].ranks && !skill[1].isTrainedOnly);
             }));
-            
+
             for (const skill of trainedSkills) {
                 skill[1].id = skill[0];
                 skill[1].name = game.i18n.localize(CONFIG.SFRPG.skills[skill[0]]);
@@ -247,7 +248,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             }
 
             // Add to the action list
-            this._addActions(saves, {id: "save", type: "system"}, actionType);
+            this._addActions(saves, { id: "save", type: "system" }, actionType);
         }
 
         /**
@@ -258,7 +259,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
 
             // Map of abilities
             const abilities = new Map(Object.entries(this.actor.system.abilities));
-            
+
             // Add in id's and localized names
             for (const [id, ability] of abilities) {
                 ability.id = id;
@@ -266,7 +267,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             }
 
             // Add to the action list
-            this._addActions(abilities, {id: "ability", type: "system"}, actionType);
+            this._addActions(abilities, { id: "ability", type: "system" }, actionType);
         }
 
         /**
@@ -290,7 +291,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
 
             // Build a sub-map for each spell level, including innate and always available spells
             for (const [key, value] of spells) {
-                
+
                 // set the level to the preparation mode if it has one
                 const prepMode = value.system.preparation.mode
                 let spellLevel = null;
@@ -324,6 +325,124 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
             }
         }
 
+        /** 
+         * 
+         * Starships
+         * 
+         */
+
+        /**
+         * Build starship crew actions
+         * @private
+         */
+        async _buildStarshipCrewActions() {
+            if (!this.actor?.useStarshipAction) return
+
+            const pack = game.packs.get('sfrpg.starship-actions')
+            if (!pack) return
+
+            const roleOrder = ['captain', 'pilot', 'gunner', 'engineer', 'scienceOfficer', 'magicOfficer', 'chiefMate', 'openCrew', 'minorCrew']
+            const groupIds = {
+                captain: 'starshipCrewCaptain',
+                pilot: 'starshipCrewPilot',
+                gunner: 'starshipCrewGunner',
+                engineer: 'starshipCrewEngineer',
+                scienceOfficer: 'starshipCrewScienceOfficer',
+                magicOfficer: 'starshipCrewMagicOfficer',
+                chiefMate: 'starshipCrewChiefMate',
+                openCrew: 'starshipCrewOpenCrew',
+                minorCrew: 'starshipCrewMinorCrew'
+            }
+
+            const actions = await pack.getDocuments()
+            if (!actions?.length) return
+
+            actions.sort((left, right) => left.name.localeCompare(right.name))
+
+            const groupedActions = actions.reduce((grouped, action) => {
+                const role = action.system?.role
+                if (!role) return grouped
+
+                if (!grouped[role]) {
+                    grouped[role] = new Map()
+                }
+
+                grouped[role].set(action.id ?? action._id, action)
+                return grouped
+            }, {})
+
+            roleOrder.forEach((role) => {
+                const roleActions = groupedActions[role]
+                if (!roleActions?.size) return
+
+                this._addActions(roleActions, { id: groupIds[role], type: 'system' }, 'crewAction')
+                delete groupedActions[role]
+            })
+
+            for (const [role, roleActions] of Object.entries(groupedActions)) {
+                if (!roleActions?.size) continue
+                const groupId = groupIds[role]
+                if (!groupId) continue
+
+                this._addActions(roleActions, { id: groupId, type: 'system' }, 'crewAction')
+            }
+        }
+
+
+        /**
+         * Build starship weapons
+         * @private
+         */
+        _buildStarshipWeaponsCategory() {
+            const actionType = 'equipment'
+            const order = ['forward', 'starboard', 'port', 'aft', 'turret']
+            const groupIds = {
+                forward: 'starshipWeaponForward',
+                starboard: 'starshipWeaponStarboard',
+                port: 'starshipWeaponPort',
+                aft: 'starshipWeaponAft',
+                turret: 'starshipWeaponTurret'
+            }
+
+            if (this.items.size === 0) return
+
+            const weapons = new Map([...this.items].filter(item => item[1].type === 'starshipWeapon'))
+            if (weapons.size === 0) return
+
+            const groupedWeapons = {}
+            const uncategorizedWeapons = new Map()
+
+            for (const [key, weapon] of weapons) {
+                const mount = String(weapon.system?.mount?.arc ?? '').toLowerCase()
+
+                if (!order.includes(mount)) {
+                    uncategorizedWeapons.set(key, weapon)
+                    continue
+                }
+
+                if (!groupedWeapons[mount]) {
+                    groupedWeapons[mount] = new Map()
+                }
+
+                groupedWeapons[mount].set(key, weapon)
+            }
+
+            order.forEach((mount) => {
+                const groupWeapons = groupedWeapons[mount]
+                if (!groupWeapons?.size) return
+
+                this._addActions(groupWeapons, { id: groupIds[mount], type: 'system' }, actionType)
+            })
+
+            if (uncategorizedWeapons.size > 0) {
+                this._addActions(uncategorizedWeapons, { id: 'starshipWeapon', type: 'system' }, actionType)
+            }
+        }
+
+
+
+
+
         /**
          * Build actions
          * @private
@@ -331,7 +450,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {object} groupData
          * @param {string} actionType
          */
-        async _addActions (items, groupData, actionType) {
+        async _addActions(items, groupData, actionType) {
             // Exit if there are no items
             if (items.size === 0) return;
 
@@ -362,17 +481,17 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {object} entity
          * @returns {object}
          */
-        _getAction (actionType, entity) {
+        _getAction(actionType, entity) {
 
             const info = this._getItemInfo(entity);
-            
+
             // get the id from id or _id, include the spell level if it's a spell
             const id = entity.id ?? entity._id;
-            
+
             // get the entity's name
             const name = entity?.name ?? entity?.label;
             const actionTypeName = `${coreModule.api.Utils.i18n(ACTION_TYPE[actionType])}: ` ?? '';
-            
+
             const encodedValue = [actionType, id].join(this.delimiter);
             const cssClass = '';
             const img = coreModule.api.Utils.getImage(entity);
@@ -404,7 +523,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {object} spell The spell object
          * @returns {object}     The spell info
          */
-        _getSpellInfo (spell) {
+        _getSpellInfo(spell) {
             const componentData = this._getComponentsInfo(spell)
             const usesData = this._getUsesData(spell)
 
@@ -419,7 +538,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {object} spell The spell object
          * @returns {string}     The spell components
          */
-        _getComponentsInfo (spell) {
+        _getComponentsInfo(spell) {
             const text = spell.components.value ?? spell.system.components?.value ?? ''
             const title = Object.entries(spell.components)
                 .filter(component => component[1] === true)
@@ -433,7 +552,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {object} spell The spell
          * @returns {string}     The uses
          */
-        _getUsesData (spell) {
+        _getUsesData(spell) {
             const value = spell?.uses?.value
             const max = spell?.uses?.max
             const text = (value && max >= 0) ? `${value}/${max}` : ''
@@ -445,7 +564,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @private
          * @returns {object}
          */
-        _getActors () {
+        _getActors() {
             const allowedTypes = [
                 "character",
                 "drone",
@@ -465,7 +584,7 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {object} item
          * @returns {object}
          */
-        _getItemInfo (item) {
+        _getItemInfo(item) {
             const quantityData = this._getQuantityData(item) ?? ''
             return {
                 info1: { text: quantityData }
@@ -478,13 +597,13 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
          * @param {object} item
          * @returns {string}
          */
-        _getQuantityData (item) {
+        _getQuantityData(item) {
             const quantity = item?.system?.quantity
             return (quantity > 1) ? quantity : ''
         }
 
         /** @protected */
-        _foundrySort (a, b) {
+        _foundrySort(a, b) {
             if (!(a?.sort || b?.sort)) return 0
 
             return a.sort - b.sort

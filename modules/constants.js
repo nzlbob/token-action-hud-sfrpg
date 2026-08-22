@@ -15,13 +15,14 @@ export const CORE_MODULE = {
 /**
  * Core module version required by the system module
  */
-export const REQUIRED_CORE_MODULE_VERSION = '2'
+export const REQUIRED_CORE_MODULE_VERSION = '2.1'
 
 /**
  * Action type
  */
 export const ACTION_TYPE = {
     attribute: 'tokenActionHud.pf2e.attribute',
+    crewAction: 'Starship Crew Action',
     equipment: 'Equipment',
     feat: 'PF2E.Item.Feat.LevelLabel',
     save: 'tokenActionHud.pf2e.save',
@@ -63,6 +64,21 @@ export const GROUP = {
     equipment: { id: 'equipment', name: 'Equipment', type: 'system' },
     save: { id: 'save', name: 'Saves', type: 'system' },
     shield: { id: 'shield', name: 'Shields', type: 'system' },
+    starshipCrewCaptain: { id: 'starshipCrewCaptain', name: 'Captain', type: 'system' },
+    starshipCrewChiefMate: { id: 'starshipCrewChiefMate', name: 'Chief Mate', type: 'system' },
+    starshipCrewEngineer: { id: 'starshipCrewEngineer', name: 'Engineer', type: 'system' },
+    starshipCrewGunner: { id: 'starshipCrewGunner', name: 'Gunner', type: 'system' },
+    starshipCrewMagicOfficer: { id: 'starshipCrewMagicOfficer', name: 'Magic Officer', type: 'system' },
+    starshipCrewMinorCrew: { id: 'starshipCrewMinorCrew', name: 'Minor Crew', type: 'system' },
+    starshipCrewOpenCrew: { id: 'starshipCrewOpenCrew', name: 'Open Crew', type: 'system' },
+    starshipCrewPilot: { id: 'starshipCrewPilot', name: 'Pilot', type: 'system' },
+    starshipCrewScienceOfficer: { id: 'starshipCrewScienceOfficer', name: 'Science Officer', type: 'system' },
+    starshipWeapon: { id: 'starshipWeapon', name: 'Starship Weapons', type: 'system' },
+    starshipWeaponAft: { id: 'starshipWeaponAft', name: 'Aft Arc', type: 'system' },
+    starshipWeaponForward: { id: 'starshipWeaponForward', name: 'Forward Arc', type: 'system' },
+    starshipWeaponPort: { id: 'starshipWeaponPort', name: 'Port Arc', type: 'system' },
+    starshipWeaponStarboard: { id: 'starshipWeaponStarboard', name: 'Starboard Arc', type: 'system' },
+    starshipWeaponTurret: { id: 'starshipWeaponTurret', name: 'Turret', type: 'system' },
     spellalways: { id: 'spellalways', name: 'Always Available', type: 'system' },
     spellinnate: { id: 'spellinnate', name: 'Innate', type: 'system' },
     spell0: { id: 'spell0', name: 'Level 0', type: 'system' },
