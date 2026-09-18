@@ -338,7 +338,9 @@ Hooks.once('tokenActionHudCoreApiReady', async (coreModule) => {
         async _buildStarshipCrewActions() {
             if (!this.actor?.useStarshipAction) return
 
-            const pack = game.packs.get('sfrpg.starship-actions')
+            const starshipActionsSource = game.settings.get('sfrpg', 'starshipActionsSource')
+
+            const pack = game.packs.get(starshipActionsSource)
             if (!pack) return
 
             const roleOrder = ['captain', 'pilot', 'gunner', 'engineer', 'scienceOfficer', 'magicOfficer', 'chiefMate', 'openCrew', 'minorCrew']
